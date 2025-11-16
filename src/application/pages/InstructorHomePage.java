@@ -24,6 +24,18 @@ public class InstructorHomePage {
 
 		layout.setStyle("-fx-alignment: center; -fx-padding: 20;");
 
+		// Staff tools button (instructors may access staff utilities)
+		Button staffToolsBtn = new Button("Staff Tools");
+		staffToolsBtn.setOnAction(e -> {
+			try {
+				new StaffHomePage().show(primaryStage);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+
+		layout.getChildren().add(staffToolsBtn);
+
 		TableView<User> userTable = new TableView<>();
 		setupUserTable(userTable, primaryStage);
 

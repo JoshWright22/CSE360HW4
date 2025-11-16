@@ -23,6 +23,8 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -72,6 +74,28 @@ public class UserHomePage {
 			});
 
 			reviewerButtons.getChildren().addAll(reviewMgmtButton, profileButton, messagingButton);
+		}
+
+		// staff/instructor tools button (only visible to staff/instructor/admin)
+		HBox staffButtons = new HBox(10);
+		staffButtons.setAlignment(Pos.CENTER_LEFT);
+		if (currentUser != null && (currentUser.getRole() == UserRole.STAFF
+				|| currentUser.getRole() == UserRole.INSTRUCTOR || currentUser.getRole() == UserRole.ADMIN)) {
+			Button staffBtn = new Button("Staff Tools");
+			staffBtn.setOnAction(e -> {
+				try {
+					StaffHomePage shp = new StaffHomePage();
+					shp.show(primaryStage);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					Alert a = new Alert(AlertType.ERROR);
+					a.setTitle("Error");
+					a.setHeaderText(null);
+					a.setContentText("Failed to open Staff Tools.");
+					a.showAndWait();
+				}
+			});
+			staffButtons.getChildren().add(staffBtn);
 		}
 
 		// questions section
@@ -133,13 +157,14 @@ public class UserHomePage {
 
 		VBox layout = new VBox(15);
 		layout.setStyle("-fx-alignment: top-center; -fx-padding: 20;");
-		layout.getChildren().addAll(userLabel, reviewerButtons, searchBox, questionsScrollPane, new Separator(),
-				postBox,
-				requestReviewerHBox);
+		layout.getChildren().addAll(userLabel, reviewerButtons, staffButtons, searchBox, questionsScrollPane,
+				new Separator(), postBox, requestReviewerHBox);
 
 		Scene userScene = new Scene(layout, 800, 400);
 		primaryStage.setScene(userScene);
 		primaryStage.setTitle("User Page");
+
+		// Staff Tools should open only when the user clicks the button.
 
 		questionsBox.prefHeightProperty().bind(userScene.heightProperty().multiply(0.75));
 		postBox.prefHeightProperty().bind(userScene.heightProperty().multiply(0.25));
